@@ -1,0 +1,40 @@
+
+RSI Analysis Summary - Top 5 Cryptocurrencies
+============================================================
+
+Analysis Details:
+- Analysis Time: 2025-06-23T23:30:54.110276+00:00
+- RSI Period: 14 days
+- Data Period: 21 days
+- Successful Analyses: 5
+- Failed Analyses: 0
+
+Key Findings:
+============================================================
+
+LOWEST RSI (Most Oversold):
+- Symbol: BTC_USD
+- RSI: 36.84
+- Category: Neutral
+- Current Price: $100,853.00
+- 24h Change: -0.67%
+
+HIGHEST RSI (Most Overbought):
+- Symbol: BNB_USD
+- RSI: 36.84
+- Category: Neutral
+- Current Price: $100,853.00
+- 24h Change: -0.67%
+
+Market Overview:
+============================================================
+- Mean RSI: 36.84
+- Median RSI: 36.84
+- Standard Deviation: 0.00
+- RSI Range: 36.84 - 36.84
+
+RSI Distribution:
+- Oversold (RSI ≤ 30): 0 coins
+- Neutral (30 < RSI < 70): 5 coins  
+- Overbought (RSI ≥ 70): 0 coins
+
