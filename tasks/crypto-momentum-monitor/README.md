@@ -1,7 +1,7 @@
 # Cryptocurrency Momentum Monitor
 
 ## Purpose
-This requirement implements an automated cryptocurrency momentum monitoring system that scans the top 10-20 cryptocurrencies (excluding stablecoins) every 4 hours to identify coins meeting specific technical and volume criteria for potential trading opportunities.
+This task implements an automated cryptocurrency momentum monitoring system that scans the top 10-20 cryptocurrencies (excluding stablecoins) every 4 hours to identify coins meeting specific technical and volume criteria for potential trading opportunities.
 
 ## Agent Thought Process
 The user requested a sophisticated momentum monitoring system with specific technical analysis criteria. I designed a comprehensive solution using the volume_data tool:

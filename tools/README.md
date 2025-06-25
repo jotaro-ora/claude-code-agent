@@ -2,9 +2,36 @@
 
 ## Overview
 
-This directory contains high-quality, reusable utility tools that can be used across all project requirements. All code in this directory must adhere to the highest standards of quality, documentation, and maintainability.
+This directory contains high-quality, reusable utility tools that can be used across all project tasks. All code in this directory must adhere to the highest standards of quality, documentation, and maintainability.
 
-**⚠️ IMPORTANT**: This directory is **IMMUTABLE**. Tools here should never be modified during requirement implementations. Only add new tools or make improvements through careful review and testing.
+**⚠️ IMPORTANT**: This directory is **IMMUTABLE**. Tools here should never be modified during task implementations. Only add new tools or make improvements through careful review and testing.
+
+**🔧 CRITICAL MAINTENANCE RULE**: When modifying any tool in this directory (adding, updating, or removing tools), you MUST also update `tools_list.md` to reflect the changes. This file serves as the authoritative reference for AI agents to understand available functionality.
+
+## Tools Documentation Maintenance
+
+### tools_list.md
+- **Purpose**: Comprehensive catalog of all available tools for AI agent reference
+- **Location**: `/tools/tools_list.md`
+- **Maintenance**: Must be updated whenever tools are added, modified, or removed
+- **Content**: Includes purpose, main functions, usage examples, and categorization
+
+### Required Updates to tools_list.md
+When making any changes to tools in this directory:
+
+1. **Adding New Tools**: Add complete entry with purpose, main function, description, and usage
+2. **Modifying Existing Tools**: Update the corresponding entry to reflect changes
+3. **Removing Tools**: Remove the corresponding entry
+4. **Function Changes**: Update main function names and descriptions
+5. **New Categories**: Add new tool categories if needed
+
+### tools_list.md Update Checklist
+- [ ] Tool purpose and main function documented
+- [ ] Usage example provided
+- [ ] Proper categorization assigned
+- [ ] Environment variables listed
+- [ ] Error handling notes included
+- [ ] Performance considerations documented
 
 ## Code Quality Standards
 
@@ -455,7 +482,7 @@ Before adding any tool to this directory, ensure:
 All tools in this directory should:
 
 1. **Follow the project's environment variable pattern** using `.env`
-2. **Be importable from any requirement folder** using `from tools.module_name import function`
+2. **Be importable from any task folder** using `from tools.module_name import function`
 3. **Handle errors gracefully** without breaking calling code
 4. **Be well-documented** so future agents can understand and use them
 5. **Be production-ready** with proper error handling and validation
@@ -470,4 +497,4 @@ All tools in this directory should:
 
 ---
 
-**Remember**: These tools form the foundation of the entire project. High standards here ensure reliable, maintainable code across all requirements.
+**Remember**: These tools form the foundation of the entire project. High standards here ensure reliable, maintainable code across all tasks.

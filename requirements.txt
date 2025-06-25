@@ -1,6 +1,8 @@
 # Core dependencies for claude-code-agent project
 requests>=2.31.0
 pandas>=2.0.0
+websocket-client>=1.6.0
+websockets>=11.0.0
 
 # Development and testing
 pytest>=7.0.0

@@ -20,7 +20,9 @@ import os
 from dotenv import load_dotenv
 import time
 
-load_dotenv()
+# Load environment variables from project root directory
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+load_dotenv(os.path.join(project_root, '.env'))
 
 def get_coin_ohlc_range_by_id(coin_id, vs_currency='usd', from_timestamp=None, to_timestamp=None, interval=None):
     """

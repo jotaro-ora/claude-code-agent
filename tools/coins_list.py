@@ -21,7 +21,9 @@ import os
 from dotenv import load_dotenv
 import time
 
-load_dotenv()
+# Load environment variables from project root directory
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+load_dotenv(os.path.join(project_root, '.env'))
 
 def get_coins_list(include_inactive=False):
     """

@@ -2,208 +2,166 @@
 
 ## Project Overview
 
-This project is designed to be maintained entirely through Claude Code interactions, with no human maintenance required. All project development, modifications, and maintenance should follow the established framework rules below.
+This project is designed for autonomous maintenance through Claude Code interactions. All development follows established framework rules to ensure consistency and maintainability.
 
-## Core Architecture Rules
+## Core Architecture
 
-### 1. Protected Tools Folder
-- **Location**: `/tools/` - IMMUTABLE (Agents must NEVER modify)
-- **Purpose**: Contains core utility tools available to all requirements
-- **Current Tools**: `coingecko.py` (Cryptocurrency data fetching from CoinGecko API)
+### 1. Protected Tools Folder (`/tools/`)
+- **IMMUTABLE**: Never modify during task implementations
+- **Purpose**: Shared utility tools for all tasks
+- **Documentation**: `tools_list.md` catalogs all available tools
+- **Priority**: Always use existing tools before creating custom ones
 
-### 2. Requirement-Based Folder Structure
-When a user requests a new feature or functionality:
-- Create a new folder named after the requirement (use kebab-case: `user-authentication`, `data-visualization`)
-- All related content goes in its dedicated folder: source code, tests, data, configuration, custom tools, documentation
+### 2. Task-Based Structure (`/tasks/`)
+- **Location**: All task implementations go in `/tasks/task-name/`
+- **Independence**: Tasks are completely isolated from each other
+- **Focus**: Work on only one task at a time to minimize token usage
+- **Structure**:
+  ```
+  tasks/task-name/
+  ├── README.md
+  ├── src/
+  ├── tests/
+  ├── data/ (if needed)
+  └── tools/ (custom tools only)
+  ```
 
-### 3. Tool Priority System
-1. **First Priority**: Use tools from `/tools/` folder
-2. **Second Priority**: If `/tools/` cannot complete the task, create custom tools in the requirement's folder
-3. **Custom Tool Location**: Never place custom tools in `/tools/`
+### 3. Task Isolation Principle
+- **Single Task Focus**: Only read/analyze files from the current task being worked on
+- **Token Efficiency**: Avoid loading multiple task contexts simultaneously
+- **Independence**: Tasks should not reference or depend on other tasks
+- **Shared Resources**: Use only `/tools/` for cross-task functionality
 
-### 4. Requirement Independence
-- Each requirement must be completely independent and self-contained
-- Requirements should NOT depend on other requirement folders
-- Only use `/tools/` folder for shared functionality
-- Each requirement manages its own data and configuration
-- Any requirement should work independently after fresh project setup
+## Development Standards
 
-## Development Principles
+### Code Quality Requirements
+- **State Management**: Implement persistence for stateful tasks to handle restarts
+- **Environment Variables**: Load all credentials from root `.env` using python-dotenv
+- **CLI Parameters**: Make key parameters configurable via command-line arguments
+- **Error Handling**: Comprehensive error handling with specific exceptions
+- **Testing**: Write tests before implementation (TDD approach)
+- **Documentation**: Comprehensive docstrings and comments
+- **Performance**: Complete execution within 10 minutes
 
-### Core Principles:
-1. **Preserve Original Requirements**: Never modify user's explicit requirements. Supplement missing details with reasonable defaults but never change explicit instructions.
-2. **Quality Assurance**: Test results against common sense and fix obvious errors (missing variables, empty returns, etc.) immediately.
-3. **Version Control**: Delete redundant code versions - maintain only one primary working version per feature.
-4. **Parameterization**: Make key task parameters externally configurable for future control and flexibility.
-5. **File Management**: Only save files when explicitly requested by user or when task requires state persistence for successful execution.
-6. **Documentation Synchronization**: When modifying requirements, always update the corresponding README.md file. When creating new implementations, remove outdated versions.
+### Environment Configuration
+Root `.env` file format:
+```bash
+# API Keys
+COINGECKO_API_KEY=your_key_here
+```
 
-### Code Quality Standards
-All agent-generated code MUST:
-- Include comprehensive comments explaining functionality, parameters, and return values
-- Follow test-driven development: Write tests before implementation
-- Be continuously tested: Agent must execute and verify code works before completion
-- Consider dependencies: When modifying code, check all references and update accordingly
-- Handle errors gracefully: Include proper error handling and logging
+Load in code:
+```python
+from dotenv import load_dotenv
+import os
 
-### Performance & Security
-- **Execution Time**: Single script execution must complete within 10 minutes
-- **Performance**: Consider computational efficiency, implement caching, pagination, and rate limiting
-- **Environment Configuration**: Use `.env` file for all API keys and sensitive data
-- **Security**: Never hardcode credentials, validate inputs, handle secrets safely
+load_dotenv()
+api_key = os.getenv('COINGECKO_API_KEY')
+```
 
 ## Development Workflow
 
-### For New Requirements:
-1. **Create requirement folder**: `/requirement-name/`
-2. **Set up structure**:
-   ```
-   requirement-name/
-   ├── README.md
-   ├── src/
-   ├── tests/
-   ├── data/ (if needed)
-   └── tools/ (if custom tools needed)
-   ```
-3. **Write comprehensive README.md**
-4. **Implement with tests**: Follow TDD approach
-5. **Continuous testing**: Execute code until it works correctly
-6. **Quality validation**: Check results for logical consistency and obvious errors
-7. **Performance validation**: Ensure execution time stays within 10-minute limit
-8. **Independence verification**: Confirm no dependencies on other requirements
-9. **File management**: Only save files necessary for task completion or user-requested outputs
-10. **Clean up**: Remove any temporary or duplicate versions
+### For New Tasks
+1. Create folder: `/tasks/task-name/`
+2. Set up standard structure
+3. Check `tools_list.md` for existing tools
+4. Implement with state persistence and CLI args
+5. Write comprehensive tests
+6. Document in README.md
 
-### For Modifications:
-1. **Read existing documentation**: Understand current implementation
-2. **Identify impact**: Find all code that references what you're changing
-3. **Respect original requirements**: Don't change explicit user specifications unless explicitly requested
-4. **Update tests first**: Modify or add tests for new behavior
-5. **Implement changes**: Make code modifications with configurable parameters where possible
-6. **Verify functionality**: Test until everything works and results make sense
-7. **Clean up versions**: Remove outdated or redundant code versions
-8. **Synchronize documentation**: Update README.md to reflect all changes made to the requirement
-9. **File management**: Only save modified files necessary for functionality
+### For Modifications
+1. Focus only on the specific task being modified
+2. Update tests first
+3. Implement changes with CLI configurability
+4. Verify functionality through testing
+5. Update task's README.md
+
+### Tool Usage Priority
+1. **First**: Use existing tools from `/tools/`
+2. **Second**: Create custom tools in task's `/tools/` folder
+3. **Never**: Place custom tools in `/tools/`
 
 ## Documentation Standards
 
-### Required Documentation
-Every requirement folder MUST contain:
-- **README.md**: Comprehensive documentation including requirement description, agent's thought process, file structure, usage instructions, dependencies, and testing procedures
-
-### README.md Template:
+### Task README.md Template
 ```markdown
-# [Requirement Name]
+# [Task Name]
 
 ## Purpose
-Brief description of what this requirement accomplishes.
-
-## Agent Thought Process
-Detailed explanation of design decisions and approach.
-
-## File Structure
-- `src/`: Main source code
-- `tests/`: Test files
-- `data/`: Data storage (if applicable)
-- `tools/`: Custom tools (if applicable)
-
-## Dependencies
-List of required packages and tools.
-
-## Setup Instructions
-Step-by-step setup process.
+Brief description of task functionality.
 
 ## Usage
-How to use the implemented functionality.
+Command-line usage examples with parameters.
+
+## Dependencies
+Required packages and environment variables.
 
 ## Testing
 How to run tests and verify functionality.
+```
 
-## Integration Points
-How this integrates with other parts of the project.
+### Tools Documentation
+- **Mandatory**: Update `tools_list.md` when modifying `/tools/`
+- **Purpose**: Enable AI agents to discover available functionality
+- **Content**: Tool purpose, functions, usage examples
+
+## Maintenance Protocol
+
+### Agent Guidelines
+1. **Read CLAUDE.md first** to understand framework
+2. **Use TodoWrite** to plan and track work
+3. **Focus on single task** to minimize token usage
+4. **Respect task independence** - no cross-task dependencies
+5. **Test continuously** until code works correctly
+6. **Make parameters CLI-configurable** where valuable
+7. **Clean up redundant code** - maintain only working versions
+8. **Document thoroughly** especially design decisions
+
+### File Management
+- **Save files only when**: Explicitly requested or functionally required
+- **Clean up**: Remove temporary or duplicate versions
+- **State files**: Only for tasks requiring persistence
+
+## Performance & Security
+
+### Execution Requirements
+- **Time limit**: 10 minutes maximum per script
+- **Memory efficiency**: Use generators for large datasets
+- **Rate limiting**: Implement for API calls
+- **Caching**: Recommend for expensive operations
+
+### Security Standards
+- **Never hardcode credentials**: Use environment variables only
+- **Input validation**: Sanitize all user inputs
+- **Error messages**: Don't expose sensitive information
+- **Credential logging**: Never log API keys or secrets
+
+## Error Handling Standards
+
+### Required Patterns
+```python
+# Input validation
+if not isinstance(param, expected_type):
+    raise TypeError(f"Expected {expected_type}, got {type(param)}")
+
+# API error handling
+try:
+    response = requests.get(url, timeout=15)
+    response.raise_for_status()
+except requests.exceptions.Timeout:
+    raise ConnectionError("Request timeout")
+except requests.exceptions.HTTPError as e:
+    raise ConnectionError(f"HTTP error: {e}")
 ```
 
 ## Testing Requirements
 
-All code must include:
-- **Unit tests**: Test individual functions/methods
-- **Integration tests**: Test component interactions
-- **End-to-end tests**: Test complete workflows
-- **Error handling tests**: Test failure scenarios
-
-## Environment Configuration
-
-Create and maintain `.env` with:
-```bash
-# CoinGecko API
-COINGECKO_API_KEY=your_coingecko_api_key_here
-
-# Add other API keys as needed
-# OPENAI_API_KEY=your_openai_key
-# DATABASE_URL=your_database_url
-# OTHER_SERVICE_KEY=your_key
-```
-
-## Maintenance Protocol
-
-When agents work on this project they should:
-1. **Always read CLAUDE.md first** to understand the framework
-2. **Use TodoWrite tool** to plan and track work
-3. **Follow the folder structure** exactly as specified
-4. **Respect user requirements** - never modify explicit user specifications without permission
-5. **Test continuously** until code works correctly
-6. **Validate results** for logical consistency and obvious errors
-7. **Validate performance** ensuring 10-minute execution limit compliance
-8. **Ensure independence** from other requirement folders
-9. **Clean up redundant versions** - maintain only primary working code
-10. **Make parameters configurable** where it adds value for future control
-11. **Manage files responsibly** - only save when explicitly requested or functionally required
-12. **Synchronize documentation** - update README files when making changes to requirements
-13. **Document thoroughly** especially thought processes
-14. **Consider impact** on existing code when making changes
-
-## File Organization Examples
-
-### Web Scraping Requirement
-```
-web-scraping/
-├── README.md                 # Full documentation
-├── src/
-│   ├── scraper.py           # Main scraping logic
-│   └── utils.py             # Helper functions
-├── tests/
-│   ├── test_scraper.py      # Unit tests
-│   └── test_integration.py  # Integration tests
-├── data/
-│   └── scraped_data.json    # Output storage
-└── config/
-    └── scraping_config.yaml # Configuration
-```
-
-### API Integration Requirement
-```
-api-integration/
-├── README.md
-├── src/
-│   ├── api_client.py        # API wrapper class
-│   ├── data_processor.py    # Process API responses
-│   └── models.py            # Data models
-├── tests/
-│   ├── test_api_client.py
-│   └── test_data_processor.py
-└── tools/                   # Custom tools if needed
-    └── custom_auth.py       # Special authentication tool
-```
-
-## Error Handling Standards
-
-All code should:
-- Use try-catch blocks appropriately
-- Log errors clearly
-- Provide helpful error messages
-- Fail gracefully when possible
-- Include recovery mechanisms where appropriate
+### Test Coverage
+- **Unit tests**: Individual functions/methods
+- **Integration tests**: Component interactions  
+- **Error handling**: Failure scenarios
+- **Performance**: Execution time validation
 
 ---
 
-**Remember**: This project is designed for complete autonomous maintenance through Claude Code. Following these guidelines ensures consistency, maintainability, and successful long-term development without human intervention.
+**Framework Goal**: Enable complete autonomous maintenance through Claude Code while ensuring consistency, security, and performance across all tasks.

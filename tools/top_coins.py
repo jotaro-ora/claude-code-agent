@@ -30,12 +30,15 @@ Usage Example:
 
 import requests
 import pandas as pd
-import time
 import os
+import time
+from datetime import datetime
+from typing import List, Optional, Union
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
+# Load environment variables from project root directory
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+load_dotenv(os.path.join(project_root, '.env'))
 
 def get_top_coins(n=10, include_extra_data=False):
     """

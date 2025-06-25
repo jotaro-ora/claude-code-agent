@@ -1,7 +1,7 @@
 # RSI Analysis for Top 50 Cryptocurrencies
 
 ## Purpose
-This requirement implements RSI (Relative Strength Index) analysis for the top 50 cryptocurrencies by market cap to identify coins with the highest and lowest RSI values. The script is designed to be run repeatedly for ongoing market analysis.
+This task implements RSI (Relative Strength Index) analysis for the top 50 cryptocurrencies by market cap to identify coins with the highest and lowest RSI values. The script is designed to be run repeatedly for ongoing market analysis.
 
 ## Agent Thought Process
 The user requested a script to find the highest and lowest RSI values among the top 50 cryptocurrencies. I designed a comprehensive solution that:

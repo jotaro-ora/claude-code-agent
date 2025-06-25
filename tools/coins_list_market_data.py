@@ -21,7 +21,9 @@ import os
 from dotenv import load_dotenv
 import time
 
-load_dotenv()
+# Load environment variables from project root directory
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+load_dotenv(os.path.join(project_root, '.env'))
 
 def get_coins_list_market_data(vs_currency='usd', order='market_cap_desc', per_page=100, page=1, sparkline=False, price_change_percentage=None):
     """
