@@ -42,6 +42,12 @@ This project is designed for autonomous maintenance through Claude Code interact
 - **Testing**: Write tests before implementation (TDD approach)
 - **Documentation**: Comprehensive docstrings and comments
 - **Performance**: Complete execution within 10 minutes
+- **AI Agent Task Validation**: **MANDATORY** - When creating or modifying tasks, AI agents MUST actually run the task's corresponding code to ensure the task is correctly completed. This includes:
+  - Running the main task script with test parameters
+  - Verifying all functions work as expected
+  - Confirming data processing and output generation
+  - Testing error handling scenarios
+  - Validating that the task meets its stated objectives
 
 ### Code Simplicity Guidelines
 **CRITICAL**: Prioritize code simplicity and readability over completeness. Follow these principles:
@@ -304,6 +310,24 @@ except requests.exceptions.HTTPError as e:
 - **Integration tests**: Component interactions  
 - **Error handling**: Failure scenarios
 - **Performance**: Execution time validation
+
+### Exception Testing Requirements
+- **Zero and Empty Value Testing**: **CRITICAL** - When testing, pay special attention to zero values, empty lists, null values, and other edge cases:
+  - Test with `0`, `None`, `[]`, `{}`, `""` inputs
+  - Verify API responses with zero/empty data
+  - Check division by zero scenarios
+  - Validate empty string handling
+- **API Response Validation**: **PRIORITY ORDER** for debugging:
+  1. **First**: Check if external API calls are working correctly
+  2. **Second**: Verify API response format and data structure
+  3. **Third**: Examine internal logic and data processing
+  4. **Only assume values are normal** if you can confirm they are expected behavior
+- **Data Validation**: Always validate that:
+  - API responses contain expected fields
+  - Numeric values are within reasonable ranges
+  - String values are not empty when expected
+  - Lists/arrays have expected lengths
+  - Error responses are properly handled
 
 ---
 
