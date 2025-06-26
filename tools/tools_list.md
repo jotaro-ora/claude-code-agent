@@ -66,9 +66,20 @@ This document provides a comprehensive list of all tools available in the `/tool
 
 ### 10. coin_ohlc_range_by_id.py
 **Purpose**: Get OHLC data within a specific time range
-**Main Function**: `get_coin_ohlc_range_by_id(coin_id, vs_currency, from_timestamp, to_timestamp)`
+**Main Function**: `get_coin_ohlc_range_by_id(coin_id, vs_currency, from_timestamp, to_timestamp, interval)`
 **Description**: Fetches OHLC chart data for a specific cryptocurrency within a custom time range
-**Usage**: `from tools.coin_ohlc_range_by_id import get_coin_ohlc_range_by_id`
+**Parameters**:
+- `coin_id` (str): The coin id (e.g., 'bitcoin', 'ethereum')
+- `vs_currency` (str): The target currency (default: 'usd')
+- `from_timestamp` (int): From timestamp (UNIX, in seconds)
+- `to_timestamp` (int): To timestamp (UNIX, in seconds) 
+- `interval` (str): Data interval - 'daily' or 'hourly'
+**Usage**: 
+```python
+from tools.coin_ohlc_range_by_id import get_coin_ohlc_range_by_id
+# Get hourly OHLC data for last 7 days
+data = get_coin_ohlc_range_by_id('ethereum', 'usd', from_timestamp, to_timestamp, 'hourly')
+```
 
 ## Market Data Tools
 

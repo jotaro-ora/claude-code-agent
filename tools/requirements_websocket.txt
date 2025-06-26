@@ -1,0 +1,5 @@
+# Dependencies for Binance WebSocket tool
+# Install with: pip install -r requirements_websocket.txt
+
+websockets>=10.0
+aiohttp>=3.8.0

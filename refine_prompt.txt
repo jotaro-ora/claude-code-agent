@@ -1,0 +1,32 @@
+refine prompt
+1. 自己决定运行的 schedule，是长久运行，还是单次，周期，还是未定周期（比如每次要查询宏观指标日历）
+
+
+Week1: 本周任务，在本地仅使用claude code，可以跑通所有 code task。
+week2: 部署成服务
+week3: 测试 + 更多 tools
+week4: 正式替换原有 backtest
+
+做成服务的问题（需要额外做的工作）
+1. refine
+    a. 避免提示词攻击（越狱），过滤恶意请求例如 rm -rf 或 chmod 777 或 获取 ip 地址
+    b. 帮用户理清需求，补全缺少的部分。整理用户需求，使之符合我们的 task 框架。例如“创建一个新需求 xxx”，“在原有需求 xxx 上进行更改”
+2. 资源管理
+    a. 限制虚拟机内存和 CPU
+    b. 让 claude code 提前进行资源分析，避免生成资源消耗过大的代码
+3. 推送组件
+    a. 在 tools 中提供推送组件，生成的任务脚本自带推送能力（这个推送是向 holomind 发一个 API 请求。请求里有各种数据，holomind 要润色后以自然语言的形式推送到 ws）
+    b. 让 claude code 生成代码时就调用推送组件
+    c. 让 claude code 来管理各个任务的进程
+4. 更多 tools
+    a. 钱包和交易相关的 tools
+    b. 链上数据分析
+    c. web3 相关的 tools
+    d. LLM 相关的 tools，比如使用 holomind API 去查一个什么东西，以什么方式返回
+
+Claude.md 改进：
+1. 
+
+Tools Readme.md 改进
+1. 全部测试都放在 test 目录下，tools 目录下禁止放测试文件
+2. 涉及外部链接的工具，禁止使用 mock，必须使用真实链接

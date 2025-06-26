@@ -327,24 +327,69 @@ def expensive_operation(param):
     pass
 ```
 
-### 8. Testing Integration
+### 8. Testing Standards
 
-Every tool should be designed with testing in mind:
+#### Testing Location Requirements
+- **✅ REQUIRED**: All tests must be placed in `/tools/test/` directory
+- **❌ PROHIBITED**: No test files are allowed in `/tools/` directory
+- **Naming Convention**: Test files should be named `test_[tool_name].py`
 
+#### Real External Connection Requirements  
+- **✅ REQUIRED**: Tests for tools that connect to external APIs/services must use real connections
+- **❌ PROHIBITED**: No mock connections for external API/service testing
+- **❌ PROHIBITED**: No mock connections for external API/service testing
+- **Purpose**: Ensure tools work correctly with actual external dependencies
+- **Exception**: Mock connections only for unit testing internal logic, not external integrations
+
+#### Test Structure Standards
+```python
+# tools/test/test_example_tool.py
+"""
+Tests for example_tool functionality.
+
+This test suite validates real external API connections and tool functionality.
+"""
+
+import unittest
+from tools.example_tool import main_function
+
+class TestExampleTool(unittest.TestCase):
+    """Test suite for example_tool with real external connections."""
+    
+    def test_real_api_connection(self):
+        """Test actual API connection - no mocking allowed."""
+        # Test with real API endpoints
+        result = main_function("real_param")
+        self.assertIsNotNone(result)
+    
+    def test_input_validation(self):
+        """Test input validation logic."""
+        with self.assertRaises(ValueError):
+            main_function("")
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+#### Tool Design for Testing
 ```python
 def testable_function(input_data, api_client=None):
     """
-    Function designed for easy testing.
+    Function designed for testing with real external connections.
     
     Args:
         input_data: The data to process
-        api_client: Optional API client for dependency injection
-                   (useful for testing with mock clients)
+        api_client: Optional API client (mainly for internal logic testing)
+    
+    Note:
+        Tests should primarily use real external connections.
+        api_client parameter should only be used for testing internal logic,
+        not for mocking external API calls.
     """
     if api_client is None:
         api_client = _create_default_api_client()
     
-    # Function logic that can be easily tested
+    # Function logic that connects to real external services
     return api_client.process(input_data)
 ```
 
@@ -474,8 +519,11 @@ Before adding any tool to this directory, ensure:
 - [ ] Security best practices followed
 - [ ] Performance considerations documented
 - [ ] Multiple usage examples provided
-- [ ] Code tested and verified working
+- [ ] Code tested and verified working with real external connections
 - [ ] Dependencies added to requirements.txt
+- [ ] Tests placed in `/tools/test/` directory (not in `/tools/`)
+- [ ] Tests use real external API connections (no mocking for external services)
+- [ ] `tools_list.md` updated to include new tool documentation
 
 ## Integration with Project Framework
 
@@ -490,10 +538,12 @@ All tools in this directory should:
 ## Maintenance Notes
 
 - This directory should only contain proven, stable tools
-- New tools should be thoroughly tested before addition
+- New tools should be thoroughly tested with real external connections before addition
 - Breaking changes should be avoided; create new tools instead
 - Each tool should be independent with minimal cross-dependencies
 - Regular review and optimization should be performed to maintain quality
+- All tests must be located in `/tools/test/` directory
+- External API/service tests must use real connections, not mocks
 
 ---
 

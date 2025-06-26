@@ -241,7 +241,7 @@ class CryptoPriceMonitor:
                     self.logger.info(f"{symbol}: Support=${support:.4f}, Resistance=${resistance:.4f}")
                 else:
                     self.logger.warning(f"No historical data available for {symbol}")
-                    
+                
             except Exception as e:
                 self.logger.error(f"Failed to update levels for {symbol}: {e}")
         
@@ -256,18 +256,18 @@ class CryptoPriceMonitor:
                 
                 # Update price history
                 if symbol in self.state.tokens:
-                    config = self.state.tokens[symbol]
+        config = self.state.tokens[symbol]
                     config.price_history.append({
-                        'timestamp': datetime.now().timestamp() * 1000,
-                        'price': current_price
+            'timestamp': datetime.now().timestamp() * 1000,
+            'price': current_price
                     })
-                    
-                    # Keep only last 24 hours of data
-                    cutoff_time = (datetime.now() - timedelta(hours=24)).timestamp() * 1000
-                    config.price_history = [
+        
+        # Keep only last 24 hours of data
+        cutoff_time = (datetime.now() - timedelta(hours=24)).timestamp() * 1000
+        config.price_history = [
                         entry for entry in config.price_history 
                         if entry['timestamp'] > cutoff_time
-                    ]
+        ]
         except Exception as e:
             self.logger.error(f"Error in price callback for {symbol}: {e}")
     
@@ -332,9 +332,9 @@ class CryptoPriceMonitor:
                 
                 config.support_level = support
                 config.resistance_level = resistance
-                
+            
                 self.logger.info(f"Updated {symbol}: Support=${support:.4f}, Resistance=${resistance:.4f}")
-                
+            
         except Exception as e:
             self.logger.error(f"Failed to update levels for {symbol}: {e}")
     
@@ -409,8 +409,8 @@ async def main():
     )
     
     try:
-        await monitor.initialize()
-        await monitor.start_monitoring()
+    await monitor.initialize()
+    await monitor.start_monitoring()
     except KeyboardInterrupt:
         print("\nShutting down...")
     except Exception as e:
