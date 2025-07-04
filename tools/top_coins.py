@@ -35,6 +35,8 @@ import time
 from datetime import datetime
 from typing import List, Optional, Union
 from dotenv import load_dotenv
+import argparse
+import json
 
 # Load environment variables from project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -316,4 +318,39 @@ def get_top_coins(n=10, include_extra_data=False):
     if include_extra_data:
         return _format_detailed_data(data)
     else:
-        return _format_symbols_only(data) 
+        return _format_symbols_only(data)
+
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls get_top_coins with those arguments.
+    # Example usage:
+    #   python top_coins.py --n 10
+    #   python top_coins.py --n 50 --include_extra_data --output_format json
+    parser = argparse.ArgumentParser(description="Fetch top N cryptocurrencies by market cap from CoinGecko API.")
+    parser.add_argument('--n', type=int, default=10, help='Number of top coins to retrieve (1-1000, default: 10)')
+    parser.add_argument('--include_extra_data', action='store_true', help='Include detailed market data (default: symbols only)')
+    parser.add_argument('--output_format', choices=['json', 'csv'], default='json', help='Output format (default: json)')
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch top coins using the provided arguments
+        data = get_top_coins(n=args.n, include_extra_data=args.include_extra_data)
+        
+        # Output in the specified format
+        if args.output_format == 'json':
+            if isinstance(data, list):
+                print(json.dumps(data, ensure_ascii=False, indent=2))
+            else:  # DataFrame
+                print(json.dumps(data.to_dict('records'), ensure_ascii=False, indent=2))
+        else:  # csv
+            if isinstance(data, list):
+                # Convert list to DataFrame for CSV output
+                df = pd.DataFrame({'symbol': data})
+                print(df.to_csv(index=False))
+            else:  # DataFrame
+                print(data.to_csv(index=False))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch top coins: {e}") 

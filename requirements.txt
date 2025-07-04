@@ -2,11 +2,19 @@
 requests>=2.31.0
 pandas>=2.0.0
 websocket-client>=1.6.0
-websockets>=11.0.0
+websockets>=12.0
+
+# FastAPI and server dependencies
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+
+# Claude Code SDK and related
+claude-code-sdk>=0.0.14
+
+# Environment management
+python-dotenv>=1.0.0
 
 # Development and testing
 pytest>=7.0.0
 pytest-cov>=4.0.0
-
-# Environment management
-python-dotenv>=1.0.0

@@ -19,6 +19,8 @@ import requests
 import os
 from dotenv import load_dotenv
 import time
+import argparse
+import json
 
 # Load environment variables from project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -52,4 +54,32 @@ def get_coin_historical_data_by_id(coin_id, date, localization='false'):
             return resp.json()
         except Exception:
             time.sleep(1)
-    raise ConnectionError("API request failed after retries") 
+    raise ConnectionError("API request failed after retries")
+
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls get_coin_historical_data_by_id with those arguments.
+    # Example usage:
+    #   python coin_historical_data_by_id.py --coin_id bitcoin --date 30-12-2017
+    #   python coin_historical_data_by_id.py --coin_id ethereum --date 01-01-2020 --localization true
+    parser = argparse.ArgumentParser(description="Fetch historical data for a specific coin from CoinGecko API.")
+    parser.add_argument('--coin_id', type=str, required=True, help='Coin id, e.g., bitcoin')
+    parser.add_argument('--date', type=str, required=True, help='Date in dd-mm-yyyy format, e.g., 30-12-2017')
+    parser.add_argument('--localization', type=str, default='false', help="Include all localized languages ('true' or 'false', default: false)")
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch historical data using the provided arguments
+        data = get_coin_historical_data_by_id(
+            coin_id=args.coin_id,
+            date=args.date,
+            localization=args.localization
+        )
+        
+        # Print the result as pretty-formatted JSON
+        print(json.dumps(data, ensure_ascii=False, indent=2))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch historical data: {e}") 

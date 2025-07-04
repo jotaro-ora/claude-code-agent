@@ -19,6 +19,8 @@ import requests
 import os
 from dotenv import load_dotenv
 import time
+import argparse
+import json
 
 # Load environment variables from project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -56,4 +58,34 @@ def get_coin_historical_chart_range_by_id(coin_id, vs_currency='usd', from_times
             return resp.json()
         except Exception:
             time.sleep(1)
-    raise ConnectionError("API request failed after retries") 
+    raise ConnectionError("API request failed after retries")
+
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls get_coin_historical_chart_range_by_id with those arguments.
+    # Example usage:
+    #   python coin_historical_chart_range_by_id.py --coin_id bitcoin --from_timestamp 1609459200 --to_timestamp 1640995200
+    #   python coin_historical_chart_range_by_id.py --coin_id ethereum --vs_currency usd --from_timestamp 1609459200 --to_timestamp 1640995200
+    parser = argparse.ArgumentParser(description="Fetch historical chart data within a time range for a specific coin from CoinGecko API.")
+    parser.add_argument('--coin_id', type=str, required=True, help='Coin id, e.g., bitcoin')
+    parser.add_argument('--vs_currency', type=str, default='usd', help='Target currency (default: usd)')
+    parser.add_argument('--from_timestamp', type=int, help='From timestamp (UNIX, in seconds)')
+    parser.add_argument('--to_timestamp', type=int, help='To timestamp (UNIX, in seconds)')
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch historical chart data using the provided arguments
+        data = get_coin_historical_chart_range_by_id(
+            coin_id=args.coin_id,
+            vs_currency=args.vs_currency,
+            from_timestamp=args.from_timestamp,
+            to_timestamp=args.to_timestamp
+        )
+        
+        # Print the result as pretty-formatted JSON
+        print(json.dumps(data, ensure_ascii=False, indent=2))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch historical chart data: {e}") 

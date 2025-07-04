@@ -8,6 +8,8 @@ This directory contains high-quality, reusable utility tools that can be used ac
 
 **🔧 CRITICAL MAINTENANCE RULE**: When modifying any tool in this directory (adding, updating, or removing tools), you MUST also update `tools_list.md` to reflect the changes. This file serves as the authoritative reference for AI agents to understand available functionality.
 
+**🖥️ CLI REQUIREMENT**: All tools that connect to external APIs must support command-line interface (CLI) usage. This allows for direct testing and integration with external systems.
+
 ## Tools Documentation Maintenance
 
 ### tools_list.md
@@ -425,7 +427,51 @@ def sanitize_user_input(user_input):
     return sanitized.strip()
 ```
 
-### 10. Example Tool Template
+### 10. CLI Interface Standards
+
+All tools that connect to external APIs must include a command-line interface. This allows for direct testing and integration.
+
+#### CLI Template
+```python
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls the main function with those arguments.
+    # Example usage:
+    #   python tool_name.py --param1 value1 --param2 value2
+    #   python tool_name.py --param1 value1 --param2 value2 --output_format json
+    parser = argparse.ArgumentParser(description="Brief description of what the tool does.")
+    parser.add_argument('--param1', type=str, required=True, help='Description of param1')
+    parser.add_argument('--param2', type=str, default='default_value', help='Description of param2 (default: default_value)')
+    parser.add_argument('--output_format', choices=['json', 'csv'], default='json', help='Output format (default: json)')
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch data using the provided arguments
+        data = main_function(
+            param1=args.param1,
+            param2=args.param2
+        )
+        
+        # Output in the specified format
+        if args.output_format == 'json':
+            print(json.dumps(data.to_dict('records'), ensure_ascii=False, indent=2))
+        else:  # csv
+            print(data.to_csv(index=False))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch data: {e}")
+```
+
+#### Required CLI Features
+- **Argument Parsing**: Use `argparse` for command-line argument handling
+- **Help Text**: Provide clear help text for all parameters
+- **Output Formats**: Support both JSON and CSV output formats
+- **Error Handling**: Graceful error handling with informative messages
+- **Examples**: Include usage examples in comments
+
+### 11. Example Tool Template
 
 ```python
 """
@@ -449,6 +495,10 @@ Usage Example:
         param1="value",
         param2="2023-01-01"
     )
+    
+CLI Usage:
+    python example_tool.py --param1 value --param2 2023-01-01
+    python example_tool.py --param1 value --param2 2023-01-01 --output_format csv
 """
 
 import os
@@ -459,6 +509,8 @@ from typing import Optional, Dict, Any
 import requests
 import pandas as pd
 from dotenv import load_dotenv
+import argparse
+import json
 
 # Load environment variables
 load_dotenv()
@@ -503,6 +555,37 @@ def _process_data(param1: str, param2: str, api_key: str, options: Optional[Dict
 def _format_output(raw_data: Dict[str, Any]) -> pd.DataFrame:
     """Internal function to format output data."""
     pass
+
+
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls main_function with those arguments.
+    # Example usage:
+    #   python example_tool.py --param1 value1 --param2 2023-01-01
+    #   python example_tool.py --param1 value1 --param2 2023-01-01 --output_format csv
+    parser = argparse.ArgumentParser(description="Brief description of what the tool does.")
+    parser.add_argument('--param1', type=str, required=True, help='Description of param1')
+    parser.add_argument('--param2', type=str, default='default_value', help='Description of param2 (default: default_value)')
+    parser.add_argument('--output_format', choices=['json', 'csv'], default='json', help='Output format (default: json)')
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch data using the provided arguments
+        data = main_function(
+            param1=args.param1,
+            param2=args.param2
+        )
+        
+        # Output in the specified format
+        if args.output_format == 'json':
+            print(json.dumps(data.to_dict('records'), ensure_ascii=False, indent=2))
+        else:  # csv
+            print(data.to_csv(index=False))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch data: {e}")
 ```
 
 ## Review Checklist
@@ -524,6 +607,9 @@ Before adding any tool to this directory, ensure:
 - [ ] Tests placed in `/tools/test/` directory (not in `/tools/`)
 - [ ] Tests use real external API connections (no mocking for external services)
 - [ ] `tools_list.md` updated to include new tool documentation
+- [ ] CLI interface implemented for external API tools
+- [ ] CLI supports both JSON and CSV output formats
+- [ ] CLI includes proper help text and usage examples
 
 ## Integration with Project Framework
 

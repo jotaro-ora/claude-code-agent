@@ -20,6 +20,8 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 import time
+import argparse
+import json
 
 # Load environment variables from project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -62,4 +64,42 @@ def get_coins_list_market_data(vs_currency='usd', order='market_cap_desc', per_p
             return pd.DataFrame(data)
         except Exception:
             time.sleep(1)
-    raise ConnectionError("API request failed after retries") 
+    raise ConnectionError("API request failed after retries")
+
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls get_coins_list_market_data with those arguments.
+    # Example usage:
+    #   python coins_list_market_data.py --vs_currency usd --per_page 10
+    #   python coins_list_market_data.py --vs_currency usd --order market_cap_desc --per_page 50 --output_format json
+    parser = argparse.ArgumentParser(description="Fetch a list of coins with market data from CoinGecko API.")
+    parser.add_argument('--vs_currency', type=str, default='usd', help='Target currency (default: usd)')
+    parser.add_argument('--order', type=str, default='market_cap_desc', help='Order results by (default: market_cap_desc)')
+    parser.add_argument('--per_page', type=int, default=100, help='Number of results per page (max 250, default: 100)')
+    parser.add_argument('--page', type=int, default=1, help='Page number (default: 1)')
+    parser.add_argument('--sparkline', action='store_true', help='Include sparkline data')
+    parser.add_argument('--price_change_percentage', type=str, help='Include price change percentage (e.g., 24h,7d)')
+    parser.add_argument('--output_format', choices=['json', 'csv'], default='json', help='Output format (default: json)')
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch market data using the provided arguments
+        data = get_coins_list_market_data(
+            vs_currency=args.vs_currency,
+            order=args.order,
+            per_page=args.per_page,
+            page=args.page,
+            sparkline=args.sparkline,
+            price_change_percentage=args.price_change_percentage
+        )
+        
+        # Output in the specified format
+        if args.output_format == 'json':
+            print(json.dumps(data.to_dict('records'), ensure_ascii=False, indent=2))
+        else:  # csv
+            print(data.to_csv(index=False))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch market data: {e}") 

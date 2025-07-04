@@ -20,6 +20,8 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 import time
+import argparse
+import json
 
 # Load environment variables from project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -62,4 +64,42 @@ def get_coin_tickers_by_id(coin_id, exchange_ids=None, include_exchange_logo=Fal
             return pd.DataFrame(data.get('tickers', []))
         except Exception:
             time.sleep(1)
-    raise ConnectionError("API request failed after retries") 
+    raise ConnectionError("API request failed after retries")
+
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls get_coin_tickers_by_id with those arguments.
+    # Example usage:
+    #   python coin_tickers_by_id.py --coin_id bitcoin
+    #   python coin_tickers_by_id.py --coin_id ethereum --include_exchange_logo --output_format json
+    parser = argparse.ArgumentParser(description="Fetch tickers for a specific coin from CoinGecko API.")
+    parser.add_argument('--coin_id', type=str, required=True, help='Coin id, e.g., bitcoin')
+    parser.add_argument('--exchange_ids', type=str, help='Comma-separated list of exchange ids')
+    parser.add_argument('--include_exchange_logo', action='store_true', help='Include exchange logos')
+    parser.add_argument('--page', type=int, default=1, help='Page number (default: 1)')
+    parser.add_argument('--order', type=str, help='Order results by')
+    parser.add_argument('--depth', action='store_true', help='Include order book depth data')
+    parser.add_argument('--output_format', choices=['json', 'csv'], default='json', help='Output format (default: json)')
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch coin tickers using the provided arguments
+        data = get_coin_tickers_by_id(
+            coin_id=args.coin_id,
+            exchange_ids=args.exchange_ids,
+            include_exchange_logo=args.include_exchange_logo,
+            page=args.page,
+            order=args.order,
+            depth=args.depth
+        )
+        
+        # Output in the specified format
+        if args.output_format == 'json':
+            print(json.dumps(data.to_dict('records'), ensure_ascii=False, indent=2))
+        else:  # csv
+            print(data.to_csv(index=False))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch coin tickers: {e}") 

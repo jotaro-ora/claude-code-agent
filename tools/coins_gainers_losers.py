@@ -20,6 +20,8 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 import time
+import argparse
+import json
 
 # Load environment variables from project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -51,4 +53,37 @@ def get_top_gainers_losers(vs_currency='usd'):
             return {'gainers': gainers, 'losers': losers}
         except Exception:
             time.sleep(1)
-    raise ConnectionError("API request failed after retries") 
+    raise ConnectionError("API request failed after retries")
+
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls get_top_gainers_losers with those arguments.
+    # Example usage:
+    #   python coins_gainers_losers.py
+    #   python coins_gainers_losers.py --vs_currency eur --output_format json
+    parser = argparse.ArgumentParser(description="Fetch top gainers and losers from CoinGecko API.")
+    parser.add_argument('--vs_currency', type=str, default='usd', help='Target currency (default: usd)')
+    parser.add_argument('--output_format', choices=['json', 'csv'], default='json', help='Output format (default: json)')
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch gainers and losers using the provided arguments
+        result = get_top_gainers_losers(vs_currency=args.vs_currency)
+        
+        # Output in the specified format
+        if args.output_format == 'json':
+            output = {
+                'gainers': result['gainers'].to_dict('records') if not result['gainers'].empty else [],
+                'losers': result['losers'].to_dict('records') if not result['losers'].empty else []
+            }
+            print(json.dumps(output, ensure_ascii=False, indent=2))
+        else:  # csv
+            print("=== TOP GAINERS ===")
+            print(result['gainers'].to_csv(index=False))
+            print("\n=== TOP LOSERS ===")
+            print(result['losers'].to_csv(index=False))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch gainers and losers: {e}") 

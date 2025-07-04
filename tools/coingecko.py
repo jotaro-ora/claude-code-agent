@@ -36,6 +36,8 @@ from datetime import datetime, timezone
 import time
 import os
 from dotenv import load_dotenv
+import argparse
+import json
 
 # Load environment variables from project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -375,3 +377,37 @@ def get_coingecko_ohlc(symbol, interval, start_time, end_time):
             break
         time.sleep(1.2)  # Rate limiting delay between requests
     return _format_dataframe(all_data)
+
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls get_coingecko_ohlc with those arguments.
+    # Example usage:
+    #   python coingecko.py --symbol BTC_USD --interval 1d --start_time 2023-01-01 --end_time 2023-01-31
+    #   python coingecko.py --symbol ETH_USD --interval 1h --start_time 2023-12-01 --end_time 2023-12-07
+    parser = argparse.ArgumentParser(description="Fetch historical OHLC data from CoinGecko API.")
+    parser.add_argument('--symbol', type=str, required=True, help='Trading pair symbol (e.g., BTC_USD, ETH_USD)')
+    parser.add_argument('--interval', type=str, choices=['1h', '1d'], required=True, help='Time interval (1h or 1d)')
+    parser.add_argument('--start_time', type=str, required=True, help='Start time (YYYY-MM-DD or YYYY-MM-DD HH:MM:SS)')
+    parser.add_argument('--end_time', type=str, required=True, help='End time (YYYY-MM-DD or YYYY-MM-DD HH:MM:SS)')
+    parser.add_argument('--output_format', choices=['json', 'csv'], default='json', help='Output format (default: json)')
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch OHLC data using the provided arguments
+        data = get_coingecko_ohlc(
+            symbol=args.symbol,
+            interval=args.interval,
+            start_time=args.start_time,
+            end_time=args.end_time
+        )
+        
+        # Output in the specified format
+        if args.output_format == 'json':
+            print(json.dumps(data.to_dict('records'), ensure_ascii=False, indent=2))
+        else:  # csv
+            print(data.to_csv(index=False))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch OHLC data: {e}")

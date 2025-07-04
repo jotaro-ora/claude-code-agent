@@ -1,0 +1,11 @@
+We need Python code to:
+1. For each timeframe ['4h','6h','12h','1d'] for BTCUSDT (or BTC depending), fetch at least 100 candles of OHLCV data.
+2. Compute Stochastic oscillator %K and %D using standard parameters (14,3,3 smoothing) where %D is 3-period SMA of %K.
+3. Loop over the last 10 candles (or entire last 24h windows): detect crossover events where %K crosses above %D (bullish) or below %D (bearish).
+   a. Identify event types:
+      - New: crossover occurred on the most recently closed candle.
+      - Confirmed: crossover occurred on the candle before the last closed candle and stayed same direction (i.e., %K still above %D for bullish or below for bearish) on last closed candle.
+      - Closed: where a crossover event reversed within last 24h (i.e., %K crossed back, ending previous signal).
+4. Record events within last 24h (for 4h timeframe: last 6 candles, 6h: 4 candles, 12h: 2 candles, 1d: last 1 candle but we need at least 2 to detect event) .
+5. Output JSON array containing objects: {timeframe: '4h', eventTimeUTC: '2025-07-02 08:00:00', direction: 'bullish', type: 'new'}.
+6. Return results.

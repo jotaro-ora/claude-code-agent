@@ -20,6 +20,8 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 import time
+import argparse
+import json
 
 # Load environment variables from project root directory
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -51,4 +53,35 @@ def get_coins_list(include_inactive=False):
             return pd.DataFrame(data)[['id', 'symbol', 'name']]
         except Exception:
             time.sleep(1)
-    raise ConnectionError("API request failed after retries") 
+    raise ConnectionError("API request failed after retries")
+
+if __name__ == "__main__":
+    # This block allows the script to be run directly from the command line.
+    # It parses command-line arguments and calls get_coins_list with those arguments.
+    # Example usage:
+    #   python coins_list.py --include_inactive
+    #   python coins_list.py --include_inactive --output_format json
+    parser = argparse.ArgumentParser(description="Fetch the full list of coins supported by CoinGecko API.")
+    parser.add_argument('--include_inactive', action='store_true', help='Include inactive coins in the results')
+    parser.add_argument('--output_format', choices=['json', 'csv'], default='json', help='Output format (default: json)')
+    parser.add_argument('--limit', type=int, help='Limit the number of results (optional)')
+
+    args = parser.parse_args()
+
+    try:
+        # Call the main function to fetch coins list using the provided arguments
+        data = get_coins_list(include_inactive=args.include_inactive)
+        
+        # Apply limit if specified
+        if args.limit:
+            data = data.head(args.limit)
+        
+        # Output in the specified format
+        if args.output_format == 'json':
+            print(json.dumps(data.to_dict('records'), ensure_ascii=False, indent=2))
+        else:  # csv
+            print(data.to_csv(index=False))
+            
+    except Exception as e:
+        # Print error message if the API call fails
+        print(f"Failed to fetch coins list: {e}") 
