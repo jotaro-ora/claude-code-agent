@@ -179,6 +179,9 @@ python tools/coins_gainers_losers.py --vs_currency eur --output_format json
 ### Exchange Data
 - `coin_tickers_by_id.py` - Exchange ticker information
 
+### Tool Selection and Discovery
+- `tool_selector.py` - AI-powered tool filtering and recommendation
+
 ## DEX Volume Analysis Tools
 
 ### 14. dex_volume_ranking.py
@@ -193,6 +196,21 @@ python tools/dex_volume_ranking.py 20 --format json
 python tools/dex_volume_ranking.py 5 --format csv
 ```
 
+## AI-Powered Tool Selection
+
+### 15. tool_selector.py
+**Purpose**: AI-powered tool filtering and recommendation system for efficient tool discovery
+**Main Function**: `search_tools(query, max_results=5)` and `get_tool_details(tool_name)`
+**Description**: Uses Claude AI to intelligently filter and recommend tools based on natural language queries. Designed to be fast, cost-effective, and scalable for hundreds of tools. Includes fallback search mechanism for when API is not available.
+**Usage**: `from tools.tool_selector import ToolSelector`
+**CLI Usage**:
+```bash
+python tools/tool_selector.py "get bitcoin price data"
+python tools/tool_selector.py "DEX trading volume" --max-results 3
+python tools/tool_selector.py "top cryptocurrencies by market cap" --format json
+python tools/tool_selector.py "historical OHLC data" --details
+```
+
 ## Environment Variables Required
 
 **Important**: All tools automatically load API keys from the project root directory's `.env` file. 
@@ -200,6 +218,7 @@ The tools are configured to look for the `.env` file in the project root, regard
 
 ### Required Environment Variables:
 - `COINGECKO_API_KEY`: Your CoinGecko Pro API key (required for all CoinGecko API tools)
+- `ANTHROPIC_API_KEY`: Your Anthropic API key (required for AI-powered tool selection)
 
 ### .env File Location:
 ```
@@ -215,6 +234,9 @@ claude-code-agent/
 ```env
 # CoinGecko API Configuration
 COINGECKO_API_KEY=your_coingecko_api_key_here
+
+# Anthropic API Configuration
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
 ```
 
 **Note**: All tools use `load_dotenv()` with the project root path, ensuring consistent API key loading regardless of the current working directory.
