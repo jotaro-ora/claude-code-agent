@@ -12,14 +12,30 @@ from pathlib import Path
 
 def check_cli_functionality():
     """Check CLI functionality for all tools."""
-    tools_dir = Path(__file__).parent
+    tools_dir = Path(__file__).parent.parent  # Go up one level to /tools/
     tools = []
     
-    # Find all Python files in tools directory
+    # Find all Python files in tools directory (including subdirectories)
     for file_path in tools_dir.glob("*.py"):
         if file_path.name.startswith("__") or file_path.name in ["README.md", "tools_list.md"]:
             continue
         tools.append(file_path)
+    
+    # Find Python files in CoinGlass directory
+    coinglass_dir = tools_dir / "coinglass"
+    if coinglass_dir.exists():
+        for file_path in coinglass_dir.glob("*.py"):
+            if file_path.name.startswith("__"):
+                continue
+            tools.append(file_path)
+    
+    # Find Python files in LunaCrush directory
+    lunacrush_dir = tools_dir / "lunacrush"
+    if lunacrush_dir.exists():
+        for file_path in lunacrush_dir.glob("*.py"):
+            if file_path.name.startswith("__"):
+                continue
+            tools.append(file_path)
     
     print("Checking CLI functionality for all tools...")
     print("=" * 60)
@@ -27,7 +43,9 @@ def check_cli_functionality():
     results = []
     
     for tool_path in sorted(tools):
-        print(f"Checking {tool_path.name}...")
+        # Get relative path from tools directory
+        rel_path = tool_path.relative_to(tools_dir)
+        print(f"Checking {rel_path}...")
         
         try:
             with open(tool_path, 'r', encoding='utf-8') as f:
@@ -54,7 +72,7 @@ def check_cli_functionality():
             status = "✅" if all([has_argparse, has_main_block, has_parser, has_parse_args]) else "❌"
             
             result = {
-                'tool': tool_path.name,
+                'tool': str(rel_path),
                 'status': status,
                 'has_argparse': has_argparse,
                 'has_main_block': has_main_block,
@@ -83,7 +101,7 @@ def check_cli_functionality():
         except Exception as e:
             print(f"  ❌ Error reading file: {e}")
             results.append({
-                'tool': tool_path.name,
+                'tool': str(rel_path),
                 'status': "❌",
                 'error': str(e)
             })

@@ -12,8 +12,19 @@ import re
 import argparse
 from typing import List, Dict, Any, Optional
 from pathlib import Path
-from dotenv import load_dotenv
-import anthropic
+
+# Optional dependencies
+try:
+    from dotenv import load_dotenv
+    DOTENV_AVAILABLE = True
+except ImportError:
+    DOTENV_AVAILABLE = False
+
+try:
+    import anthropic
+    ANTHROPIC_AVAILABLE = True
+except ImportError:
+    ANTHROPIC_AVAILABLE = False
 
 
 class ToolSelector:
@@ -23,13 +34,17 @@ class ToolSelector:
         """Initialize the tool selector."""
         # Load environment variables from project root
         project_root = Path(__file__).parent.parent
-        load_dotenv(project_root / '.env')
+        if DOTENV_AVAILABLE:
+            load_dotenv(project_root / '.env')
         
         self.api_key = os.getenv('ANTHROPIC_API_KEY')
-        if not self.api_key:
-            raise ValueError("ANTHROPIC_API_KEY not found in environment variables")
+        self.ai_available = ANTHROPIC_AVAILABLE and self.api_key
         
-        self.client = anthropic.Anthropic(api_key=self.api_key)
+        if self.ai_available:
+            self.client = anthropic.Anthropic(api_key=self.api_key)
+        else:
+            self.client = None
+            
         self.tools_dir = Path(tools_dir) if tools_dir else Path(__file__).parent
         self.tools_list_file = self.tools_dir / 'tools_list.md'
         
@@ -80,10 +95,19 @@ class ToolSelector:
         return tools
     
     def search_tools(self, query: str, max_results: int = 5) -> List[Dict[str, Any]]:
-        """Search tools using AI-powered filtering."""
+        """Search tools using AI-powered filtering or fallback to text matching."""
         if not self.tools_data:
             return []
         
+        # Use AI if available, otherwise fallback to text matching
+        if self.ai_available and self.client:
+            return self._ai_search(query, max_results)
+        else:
+            print("AI search not available, using fallback text matching...")
+            return self._fallback_search(query, max_results)
+    
+    def _ai_search(self, query: str, max_results: int) -> List[Dict[str, Any]]:
+        """AI-powered search using Claude."""
         # Create a compact representation of tools for AI processing
         tools_summary = []
         for tool_name, tool_data in self.tools_data.items():

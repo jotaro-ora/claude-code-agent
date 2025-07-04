@@ -177,6 +177,59 @@ class CLITester:
                 'python', 'dex_volume_ranking.py', 
                 '5'
             ]),
+            
+            # CoinGlass API Tools (23 endpoints) - NOTE: These need CLI implementation first
+            ('coinglass/coin_taker_buy_sell_volume_history.py', [
+                'python', 'coinglass/coin_taker_buy_sell_volume_history.py', 
+                '--symbol', 'BTC'
+            ]),
+            ('coinglass/funding_rate_arbitrage.py', [
+                'python', 'coinglass/funding_rate_arbitrage.py', 
+                '--symbol', 'BTC'
+            ]),
+            ('coinglass/funding_rate_exchange_list.py', [
+                'python', 'coinglass/funding_rate_exchange_list.py'
+            ]),
+            ('coinglass/futures_supported_coins.py', [
+                'python', 'coinglass/futures_supported_coins.py'
+            ]),
+            ('coinglass/index_fear_greed_history.py', [
+                'python', 'coinglass/index_fear_greed_history.py'
+            ]),
+            ('coinglass/liquidation_coin_list.py', [
+                'python', 'coinglass/liquidation_coin_list.py'
+            ]),
+            ('coinglass/liquidation_exchange_list.py', [
+                'python', 'coinglass/liquidation_exchange_list.py'
+            ]),
+            ('coinglass/open_interest_exchange_list.py', [
+                'python', 'coinglass/open_interest_exchange_list.py'
+            ]),
+            ('coinglass/spot_supported_coins.py', [
+                'python', 'coinglass/spot_supported_coins.py'
+            ]),
+            
+            # LunaCrush API Tools (10 endpoints) - NOTE: These need CLI implementation first
+            ('lunacrush/coins_list.py', [
+                'python', 'lunacrush/coins_list.py', 
+                '--limit', '10'
+            ]),
+            ('lunacrush/coin_meta.py', [
+                'python', 'lunacrush/coin_meta.py', 
+                '--symbol', 'BTC'
+            ]),
+            ('lunacrush/coin_time_series.py', [
+                'python', 'lunacrush/coin_time_series.py', 
+                '--symbol', 'BTC', '--interval', '1d'
+            ]),
+            ('lunacrush/topic_details.py', [
+                'python', 'lunacrush/topic_details.py', 
+                '--topic', 'bitcoin'
+            ]),
+            ('lunacrush/category_details.py', [
+                'python', 'lunacrush/category_details.py', 
+                '--category', 'defi'
+            ]),
         ]
         
         # Test each tool
@@ -254,6 +307,59 @@ class CLITester:
             ('dex_volume_ranking.py', [
                 'python', 'dex_volume_ranking.py', 
                 '5'
+            ]),
+            
+            # CoinGlass API Tools (23 endpoints) - NOTE: These need CLI implementation first
+            ('coinglass/coin_taker_buy_sell_volume_history.py', [
+                'python', 'coinglass/coin_taker_buy_sell_volume_history.py', 
+                '--symbol', 'BTC'
+            ]),
+            ('coinglass/funding_rate_arbitrage.py', [
+                'python', 'coinglass/funding_rate_arbitrage.py', 
+                '--symbol', 'BTC'
+            ]),
+            ('coinglass/funding_rate_exchange_list.py', [
+                'python', 'coinglass/funding_rate_exchange_list.py'
+            ]),
+            ('coinglass/futures_supported_coins.py', [
+                'python', 'coinglass/futures_supported_coins.py'
+            ]),
+            ('coinglass/index_fear_greed_history.py', [
+                'python', 'coinglass/index_fear_greed_history.py'
+            ]),
+            ('coinglass/liquidation_coin_list.py', [
+                'python', 'coinglass/liquidation_coin_list.py'
+            ]),
+            ('coinglass/liquidation_exchange_list.py', [
+                'python', 'coinglass/liquidation_exchange_list.py'
+            ]),
+            ('coinglass/open_interest_exchange_list.py', [
+                'python', 'coinglass/open_interest_exchange_list.py'
+            ]),
+            ('coinglass/spot_supported_coins.py', [
+                'python', 'coinglass/spot_supported_coins.py'
+            ]),
+            
+            # LunaCrush API Tools (10 endpoints) - NOTE: These need CLI implementation first
+            ('lunacrush/coins_list.py', [
+                'python', 'lunacrush/coins_list.py', 
+                '--limit', '10'
+            ]),
+            ('lunacrush/coin_meta.py', [
+                'python', 'lunacrush/coin_meta.py', 
+                '--symbol', 'BTC'
+            ]),
+            ('lunacrush/coin_time_series.py', [
+                'python', 'lunacrush/coin_time_series.py', 
+                '--symbol', 'BTC', '--interval', '1d'
+            ]),
+            ('lunacrush/topic_details.py', [
+                'python', 'lunacrush/topic_details.py', 
+                '--topic', 'bitcoin'
+            ]),
+            ('lunacrush/category_details.py', [
+                'python', 'lunacrush/category_details.py', 
+                '--category', 'defi'
             ]),
         ]
         
